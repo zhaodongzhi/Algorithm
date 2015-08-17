@@ -1,0 +1,56 @@
+Question:
+Given an array of integers, every element appears three times except for one. Find that single one.
+
+Note:
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
+
+A solution:
+public int singleNumber(int[] A) {
+    int ones = 0, twos = 0;
+    for(int i = 0; i < A.length; i++){
+        ones = (ones ^ A[i]) & ~twos;
+        twos = (twos ^ A[i]) & ~ones;
+    }
+    return ones;
+}
+
+T:It use ^ & ~ three bit operation to do it. ^ & ~ have a common which is they won't carry bit or borrow bit when two 
+operands operating in binary.
+
+Base T, I have two understanding about the solution:
+
+    Understanding one:
+        I can image that convert every number in the array to binary, I use A[i][j] represent the jth bit from low to
+        high. So the solution equivalence blow description: (because of T)
+            ones = 0, twos = 0
+            for j in sizeof(A[0]):   #A[0],A[1],....A[len(A)-1] have same size
+                for i in len(A):
+                    ones[j] = (ones[j] ^ A[i][j]) & ~twos[j]
+                    twos[j] = (twos[j] ^ A[i][j]) & ~ones[j]
+                result[j] = ones[j]   #result is a number result[j] also represent the jth bit from low to high
+        now we look the two lines:
+            ones[j] = (ones[j] ^ A[i][j]) & ~twos[j]
+            twos[j] = (twos[j] ^ A[i][j]) & ~ones[j]
+        it have blow exchange:
+            state[0]                     state[1]           state[2]           state[3]
+            0   0  --(if A[i][j]==1)-->  1   0  --(...)-->  0   1  --(...)-->  0   0  #(...)represent the same to front condition
+        twos[j] ones[j]
+        we can see that if ones [j]==0 then if A[i][j] == 0 ones[j] keep don't change, if A[i][j] == 1 ones[j] change
+        to next state after though three times A[i][j] = 1 ones change to 0
+        because of every number in A appears three times except one(we use A[r] represent it)
+        so we can know after through one time (for i in len(A):) result[j] = A[r][j]
+        so in final result = A[r]
+    
+    Understanding two:
+        we define ones[j] = (ones[j] ^ A[i][j]) & ~twos[j]
+                  twos[j] = (twos[j] ^ A[i][j]) & ~ones[j]   as operation F
+        We can approve F have commutative law, as below:
+            first = A[i][j], second = A[i+1][j]
+            if first == 0 and second == 0:  state[k](0<=k<=3) F first F second = (ones[j], twos[j]) F second F first
+            if first == 1 and second == 1:  state[k](0<=k<=3) F first F second = (ones[j], twos[j]) F second F first
+            if first == 0 and second == 1:  state[k](0<=k<=3) F first F second = state[k+1] = (ones[j], twos[j]) F second F first
+            if first == 1 and second == 0:  state[k](0<=k<=3) F first F second = state[k+1] = (ones[j], twos[j]) F second F first
+            #(state[4] = state[0])
+      so we can change the order of the array make the same number become neighbour then use the solution in begin
+      to calculate, easy to understand
+        
