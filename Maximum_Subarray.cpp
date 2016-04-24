@@ -4,7 +4,7 @@ public:
         if(nums.size() == 0){
             return 0;
         }
-        int result = 0x80000001;
+        int result = 0x80000000;
         int tempresult = 0;
         for(int i = 0; i < nums.size(); ++i){
             tempresult += nums[i];
