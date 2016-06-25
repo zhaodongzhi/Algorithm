@@ -21,7 +21,7 @@ public:
                 else if(nums[mid] + nums[right] < sum) ++mid;
                 else --right;
             }
-            while(nums[left] == nums[left+1]){
+            while(left < nums_len-2 && nums[left] == nums[left+1]){
                 ++left;
             }
         }
