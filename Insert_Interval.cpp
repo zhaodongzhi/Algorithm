@@ -9,7 +9,47 @@
  */
 class Solution {
 public:
+    
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+        
+        vector<Interval> result;
+        
+        if(intervals.empty()){
+            result.push_back(newInterval);
+            return result;
+        }
+        
+        vector<int> left = find_place(intervals, newInterval.start, 0, intervals.size()-1);
+        vector<int> right = find_place(intervals, newInterval.end, 0, intervals.size()-1);
+        
+        for(int i = 0; i < left[0]; ++i){
+            result.push_back(intervals[i]);
+        }
+        
+        Interval interval;
+            
+        if(left[0] < left[1]){
+            
+            if(left[0] >= 0){
+                result.push_back(intervals[left[0]]);
+            }
 
+            interval.start = newInterval.start;
+            interval.end = right[0] < right[1]?newInterval.end:intervals[right[0]].end;
+        }
+        else{
+            interval.start = intervals[left[0]].start;
+            interval.end = right[0] < right[1]?newInterval.end:intervals[right[0]].end;
+        }
+        
+        result.push_back(interval);
+        for(int i = right[0] + 1; i < intervals.size(); ++i){
+            result.push_back(intervals[i]);
+        }
+        
+        return result;
+    }
+    
     vector<int> find_place(vector<Interval>& intervals, int value, int start, int end){
         
         vector<int> result;
@@ -35,60 +75,6 @@ public:
         }
         result.push_back(end);
         result.push_back(start);
-        return result;
-    }
-    
-    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
-        
-        vector<Interval> result;
-        
-        if(intervals.empty()){
-            result.push_back(newInterval);
-            return result;
-        }
-        
-        vector<int> left = find_place(intervals, newInterval.start, 0, intervals.size()-1);
-        vector<int> right = find_place(intervals, newInterval.end, 0, intervals.size()-1);
-        
-        if(left[0] < left[1]){
-            
-            for(int i = 0; i <= left[0]; ++i){
-                result.push_back(intervals[i]);
-            }
-            
-            if(right[0] < right[1]){
-                Interval interval(newInterval.start, newInterval.end);
-                result.push_back(interval);
-            }
-            else{
-                Interval interval(newInterval.start, intervals[right[0]].end);
-                result.push_back(interval);
-            }
-            
-            for(int i = right[0] + 1; i < intervals.size(); ++i){
-                result.push_back(intervals[i]);
-            }
-        }
-        else{
-            
-            for(int i = 0; i < left[0]; ++i){
-                result.push_back(intervals[i]);
-            }
-            
-            if(right[0] < right[1]){
-                Interval interval(intervals[left[0]].start, newInterval.end);
-                result.push_back(interval);
-            }
-            else{
-                Interval interval(intervals[left[0]].start, intervals[right[0]].end);
-                result.push_back(interval);
-            }
-            
-            for(int i = right[0] + 1; i < intervals.size(); ++i){
-                result.push_back(intervals[i]);
-            }
-        }
-        
         return result;
     }
 };
