@@ -4,6 +4,7 @@ public:
         if(times == 5 && begin == s.size()){
             record.pop_back();
             result.push_back(record);
+            return;
         }
         if((s.size() - begin > 3*(5-times)) || (s.size()-begin < (5-times))) return;
         else{
