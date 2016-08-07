@@ -1,4 +1,4 @@
-lass Solution(object):
+class Solution(object):
     def maxCoins(self, nums):
         """
         :type nums: List[int]
